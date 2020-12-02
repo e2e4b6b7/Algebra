@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <tuple>
+#include <memory>
 
 #include "Algebra.hpp"
 #include "Polynomial.hpp"
@@ -20,18 +21,22 @@ public:
         FactorPolynomialBase(Poly factor, bool factor_prime) :
                 factor(std::move(factor)), factor_prime(factor_prime) {}
 
-        bool operator!=(const Base &other) const {
-            return factor != other.factor;
+        bool operator==(const Base &other) const {
+            return factor == other.factor;
         }
 
         const Poly factor;
         const bool factor_prime{};
     };
 
+    static std::shared_ptr<const Base> make_base(Poly factor, bool factor_prime) {
+        return std::make_shared<const Base>(std::move(factor), factor_prime);
+    }
+
 public:
     FactorPolynomial() : polynomial{} {}
 
-    FactorPolynomial(Poly coefficients, const Base &base) :
+    FactorPolynomial(Poly coefficients, std::shared_ptr<const Base> base) :
             polynomial{std::move(coefficients)}, base{base} {}
 
     FactorPolynomial(const FactorPolynomial &poly) = default;
@@ -47,11 +52,11 @@ public:
     }
 
     FactorPolynomial(FactorPolynomial &&poly) : polynomial(std::move(poly.polynomial)) {
-        base_check();
+        base_check(poly);
     }
 
-    static FactorPolynomial one(const Base &factor) {
-        return FactorPolynomial{Poly::one, factor};
+    FactorPolynomial one() {
+        return FactorPolynomial{Poly::one(), base};
     }
 
     FactorPolynomial operator+(FactorPolynomial other) const {
@@ -70,7 +75,7 @@ public:
 
     FactorPolynomial operator*(const FactorPolynomial &other) const {
         base_check(other);
-        return {(other.polynomial * polynomial) % base.factor, base};
+        return {(other.polynomial * polynomial) % base->factor, base};
     }
 
     FactorPolynomial operator/(const FactorPolynomial &other) const {
@@ -91,7 +96,7 @@ public:
         return {polynomial * scalar, base};
     }
 
-    bool operator==(FactorPolynomial other) {
+    bool operator==(FactorPolynomial other) const {
         base_check(other);
         return polynomial == other.polynomial;
     }
@@ -101,26 +106,31 @@ public:
     }
 
     friend bool reversible(FactorPolynomial poly) {
-        if (poly.base.factor_prime) return true;
-        return gcd(poly.polynomial, poly.base.factor).pow() == 0;
+        if (poly.base->factor_prime) return true;
+        return gcd(poly.polynomial, poly.base->factor).pow() == 0;
     }
 
     friend FactorPolynomial reverse(FactorPolynomial poly) {
-        Poly gcd_v = gcd(poly.polynomial, poly.base.factor);
+        Poly gcd_v = gcd(poly.polynomial, poly.base->factor);
         if (gcd_v.pow() != 0) {
             throw std::invalid_argument{"Polynomial irreversible"};
         }
-        return FactorPolynomial(std::get<0>(bezout_ratio(poly.polynomial, poly.base.factor)) * reverse(gcd_v[0]), poly.base);
+        return FactorPolynomial(std::get<0>(bezout_ratio(poly.polynomial, poly.base->factor)) * reverse(gcd_v[0]),
+                                poly.base);
+    }
+
+    std::string view() {
+        return polynomial.view();
     }
 
 private:
     inline void base_check(const FactorPolynomial &other) const {
-        if (base != other.base) {
+        if (!(base == other.base || *base == *other.base)) {
             throw std::invalid_argument{
                     "Arithmetic operations are allowed only for elements from one field"};
         }
     }
 
     Poly polynomial;
-    const Base &base;
+    std::shared_ptr<const Base> base;
 };

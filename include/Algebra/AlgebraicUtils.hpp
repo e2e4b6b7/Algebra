@@ -6,7 +6,7 @@
 
 template<Field T>
 constexpr T binary_pow(T value, Natural pow) {
-    T ans = 1;
+    T ans = value.one();
     std::integral auto pow_ = pow.value();
     decltype(pow_) ppow = 1u;
     while (ppow <= pow_) {

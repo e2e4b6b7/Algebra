@@ -10,7 +10,8 @@ add_executable(AlgebraTest
         testAll.cpp
         testInteger.cpp
         testFactorInteger.cpp
-        testPolynomial.cpp)
+        testPolynomial.cpp
+        testFactorPolynomial.cpp)
 
 include_directories(${GTEST_INCLUDE_DIRS})
 

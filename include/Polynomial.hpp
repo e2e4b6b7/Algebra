@@ -98,14 +98,14 @@ public:
 
     Polynomial operator*(T scalar) const {
         std::vector<T> ans(coefficients.size());
-        for (int i = 0; i < coefficients.size(); ++i) {
+        for (size_t i = 0; i < coefficients.size(); ++i) {
             ans[i] = coefficients[i] * scalar;
         }
         return Polynomial(ans);
     }
 
     friend Polynomial operator*(T scalar, Polynomial other) {
-        for (int i = 0; i < other.coefficients.size(); ++i) {
+        for (size_t i = 0; i < other.coefficients.size(); ++i) {
             other.coefficients[i] = other.coefficients[i] * scalar;
         }
         return other;
