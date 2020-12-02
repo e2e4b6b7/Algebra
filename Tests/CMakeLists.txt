@@ -8,7 +8,9 @@ find_package(Threads REQUIRED)
 
 add_executable(AlgebraTest
         testAll.cpp
-        testInteger.cpp testFactorInteger.cpp)
+        testInteger.cpp
+        testFactorInteger.cpp
+        testPolynomial.cpp)
 
 include_directories(${GTEST_INCLUDE_DIRS})
 
