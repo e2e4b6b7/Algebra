@@ -1,8 +1,14 @@
 #pragma once
 
+#include <numeric>
+
 #include "Algebra.hpp"
 
-template<unsigned int mod, std::integral T = unsigned int>
+template<unsigned long long mod>
+using optimal_container = std::conditional_t<
+        mod * mod < std::numeric_limits<unsigned int>::max(), unsigned int, unsigned long long>;
+
+template<unsigned int mod, std::integral T = optimal_container<mod>>
 struct FactorInteger {
     /// Не простым модулям проход воспрещён
 
