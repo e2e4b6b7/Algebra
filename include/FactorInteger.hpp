@@ -2,32 +2,32 @@
 
 #include "Algebra.hpp"
 
-template<std::integral T = long long, T mod = 2>
+template<unsigned int mod, std::integral T = unsigned int>
 struct FactorInteger {
     /// Не простым модулям проход воспрещён
 
     constexpr FactorInteger() : value{0} {}
 
-    constexpr FactorInteger(T value) : value{value % mod} {}
+    constexpr FactorInteger(T value) : value{value % m_mod} {}
 
     constexpr static FactorInteger one() {
         return 1;
     }
 
     constexpr FactorInteger operator+(FactorInteger other) const {
-        return (value + other.value) % mod;
+        return (value + other.value) % m_mod;
     }
 
     constexpr FactorInteger operator-(FactorInteger other) const {
-        return (value - other.value + mod) % mod;
+        return (value - other.value + m_mod) % m_mod;
     }
 
     constexpr FactorInteger operator-() const {
-        return mod - value;
+        return m_mod - value;
     }
 
     constexpr FactorInteger operator*(FactorInteger other) const {
-        return (value * other.value) % mod;
+        return (value * other.value) % m_mod;
     }
 
     constexpr FactorInteger operator/(FactorInteger other) const {
@@ -39,7 +39,7 @@ struct FactorInteger {
     }
 
     friend constexpr FactorInteger reverse(FactorInteger other) {
-        return other ^ Natural(mod - 2);
+        return other ^ Natural(m_mod - 2);
     }
 
     std::string view() const {
@@ -56,4 +56,5 @@ struct FactorInteger {
 
 private:
     T value;
+    static constexpr T m_mod = mod;
 };
