@@ -3,8 +3,7 @@
 #include <vector>
 #include <string>
 
-#include "Algebra/AlgebraicDefines.hpp"
-#include "Algebra/AlgebraicUtils.hpp"
+#include "Algebra.hpp"
 
 
 template<Field T>

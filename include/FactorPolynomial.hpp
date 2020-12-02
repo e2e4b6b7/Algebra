@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <tuple>
 
-#include "Algebra/AlgebraicDefines.hpp"
+#include "Algebra.hpp"
 #include "Polynomial.hpp"
 
 template<Field T>

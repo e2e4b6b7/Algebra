@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Algebra/AlgebraicDefines.hpp"
-#include "Algebra/AlgebraicUtils.hpp"
+#include "Algebra.hpp"
 
 template<std::integral T = long long, T mod = 2>
 struct FactorInteger {
